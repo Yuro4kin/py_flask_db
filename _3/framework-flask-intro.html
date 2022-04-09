@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<base href="https://proproprogs.ru/">
+	<title>Flask: Что это такое? Простое WSGI-приложение</title>
+	<meta name="yandex-verification" content="dc612d99275111ce" />
+	<meta name="google-site-verification" content="dBeU07wRdu1RPn01tUx7i7POaYp6QVgQiuCLHWLHudM" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="shortcut icon" href="images/main.ico" type="image/x-icon"/>
+	<script type="text/javascript" src="js/jquery-1.9.0.min.js"></script>
+	<link rel="stylesheet" href="css/fonts.css">
+	<link type="text/css" href="css/styles.css" rel="stylesheet" />
+	<link type="text/css" href="css/video.css" rel="stylesheet" />
+	<meta name="description" content="Что такое фреймворк и что из себя представляет WSGI-приложение. Первая простая программа на Flask и отладка на локальном Web-сервере. Создание представлений - обработчиков запросов с помощью декоратора route.">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<script>
+function onShowMobileMenu() {
+	let m = $('#topmenu-toggle');
+	if( m.is(":visible") ) m.hide();
+	else m.show();
+}
+</script>
+
+<table class="table-page" border=0 cellpadding="0" cellspacing="0">
+<tr><td valign=top>
+		<div class="header">
+			<ul class="mainmenu-mobile">
+			<li class="logo"><a href="index.php"><div class="logo"></div></a></li>
+			<li class="last"><a href="JavaScript:onShowMobileMenu()"><div class="mobile-menu-img"></div></a></li>
+			</ul>
+
+			<ul id="mainmenu" class="mainmenu">
+			<li class="logo"><a href="index.php"><div class="logo"></div></a></li>
+			<li><a href="python">Python</a></li><li><a href="js">JavaScript</a></li><li><a href="data">Обработка данных</a></li><li><a href="java">Java</a></li>
+			<li class="last"><a href="mailto:sc_lib@list.ru">sc_lib@list.ru</a></li>
+			</ul>
+			<div class="clear"></div>
+		</div>
+		<div class="topmenu-toggle" id="topmenu-toggle">
+			<ul class="mobile-list"><li><a href="python">Python</a></li><ul class="mobile-list-expand"><li><a href="python_base">Основы Python</a></li><li><a href="python_oop">Python ООП</a></li><li><a href="wxpython">wxPython</a></li><li><a href="modules">Модули</a></li><li><a href="flask">Flask</a></li><li><a href="django">Django</a></li></ul><li><a href="js">JavaScript</a></li><ul class="mobile-list-expand"><li><a href="javascript">Основы JavaScript</a></li><li><a href="javascript_dom">JavaScript DOM</a></li><li><a href="javascript_oop">JavaScript ООП</a></li></ul><li><a href="data">Обработка данных</a></li><ul class="mobile-list-expand"><li><a href="neural_network">Нейронные сети</a></li><li><a href="dsp">ЦОС</a></li><li><a href="fractals">Фракталы</a></li><li><a href="ga">Генетические алгоритмы</a></li><li><a href="tensorflow">Tensorflow</a></li></ul><li><a href="java">Java</a></li><ul class="mobile-list-expand"><li><a href="java_base">Основы Java</a></li><li><a href="java_oop">Java ООП</a></li></ul></ul>
+		</div>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(61572289, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/61572289" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<table class="table-content" border=0 cellpadding="0" cellspacing="0">
+<tr><td valign="top" class="left-chapters">
+	<ul id="leftchapters">
+	<li>Основы Flask</li>
+	<li class="selected">Что это такое? Простое WSGI-приложение</li><li><a href="flask/ispolzovanie-shablonov">Использование шаблонов страниц сайта</a></li><li><a href="flask/kontekst-prilozheniya-i-kontekst-zaprosa">Контекст приложения и контекст запроса</a></li><li><a href="flask/url-for-i-peremennye-adresa">Функция url_for и переменные URL-адреса</a></li><li><a href="flask/podklyuchenie-vneshnih-resursov-i-rabota-s-formami">Подключение внешних ресурсов и работа с формами</a></li><li><a href="flask/soobshcheniya-flash-get-flashed-messages">Мгновенные сообщения - flash, get_flashed_messages</a></li><li><a href="flask/dekorator-errorhandler-funkcii-redirect-i-abort">Декоратор errorhandler, функции redirect и abort</a></li>
+	<li class="share">
+	<p>Поделиться</p>
+	<a class="share-vk" href="https://vk.com/share.php?url=https://proproprogs.ru/flask/flask-chto-eto-takoe-wsgi-prilozhenie" target="_blank" rel="nofollow"></a>
+	<a class="share-tw" href="https://twitter.com/intent/tweet?url=https://proproprogs.ru/flask/flask-chto-eto-takoe-wsgi-prilozhenie" target="_blank" rel="nofollow"></a>
+	<p>Наш канал</p>
+	<a class="share-yt" href="https://www.youtube.com/channel/UClJzWfGWuGJL2t-3dYKcHTA/playlists" target="_blank" rel="nofollow"></a>
+	</li>
+	</ul>
+</td><td valign="top" class="content">
+	<ul class="breadcrumbs">
+	<li><a href="index.php">Главная</a></li>
+	<li><a href="flask">Flask</a></li>
+	<li class="last">Основы Flask</li>
+	</ul>
+
+	<div class="content-text"><h1>Что это такое? Простое WSGI-приложение</h1>
+
+  	<div class="container"><div class="video_button">
+	<a href="https://www.youtube.com/watch?v=6jxveKOdyNg&list=PLA0M1Bcd0w8yrxtwgqBvT6OM4HkOU3xYn" target = "_blank" rel="nofollow">
+	<div class="title">Смотреть материал на видео</div>
+	</a>
+</div>
+
+<p>Начиная с этого
+занятия мы с вами будем знакомиться с весьма популярным и фреймворком Flask, который
+позволяет создавать сайты самых разных типов с использованием языка Python. Flask относится к
+разряду микрофреймворков, то есть, он предоставляет лишь базовый инструментарий
+для построения сайтов, как говорится, все по минимуму – ничего лишнего. Однако,
+этого вполне достаточно, чтобы создавать большинство типовых сайтов с
+поддержкой шаблонов страниц, баз данных и прочими стандартными возможностями. И,
+кроме того, простота позволяет достаточно быстро разобраться в этом пакете и
+начать сразу его применять. Наверное, в этом его главная фишка – простота и
+достаточность функционала для типовых решений.
+
+<p>Для тех кто не
+совсем знаком с принципом взаимодействия между клиентом (браузером) и
+фреймворком, установленном на сервере, опишу в двух словах этот процесс. 
+
+<p>Когда
+пользователь вводит в браузер строку запроса, например, vk.com, то от браузера
+отправляется запрос к серверу, где расположен и работает этот сайт. Здесь мы
+отложим в сторону вопрос маршрутизации и DNS-серверов,
+сейчас это неважно, главное, что сеть Интернет так устроена, что маршрутизаторы
+«знают» куда направлять запросы, если они относятся к работающим сайтам.
+
+<p align=center><img width=623  height=327 id="Рисунок 4"  src="/htm/flask/files/flask-chto-eto-takoe-wsgi-prilozhenie.files/image001.jpg">
+
+<p>Сервер постоянно
+находится в режиме ожидания очередного запроса и как только он приходит,
+формирует ответ клиенту, как правило, в виде HTML-документа. Этот
+документ возвращается в браузер и пользователь видит на экране устройства
+заветную страницу.
+
+<p>Но где же во
+всей этой схеме фреймворк? В действительности он установлен на сервере. Так как
+это обычный компьютер (ну может не совсем обычный, но принцип тот же), то на
+нем установлено соответствующее программное обеспечение. Мы, опять же, не будем
+здесь глубоко вдаваться в подробности, скажу лишь, что на них часто
+устанавливают Linux-подобные ОС
+(благодаря их надежности), затем программу под названием веб-сервер (часто это Apache или Nginx) и уже он
+отдает обработку запроса конкретному фреймворку:
+
+<p align=center><img width=623  height=291 id="Рисунок 7"  src="/htm/flask/files/flask-chto-eto-takoe-wsgi-prilozhenie.files/image002.jpg">
+
+<p>Здесь WSGI (Web Server Gateway Interface) — стандарт
+взаимодействия между Python-программой, выполняющейся на
+стороне сервера, и самим веб-сервером, например Apache. Фактически,
+это интерпретатор Python, который запускает WSGI-приложение,
+написанное на Flask.
+
+<p>При поступлении
+запроса активизируется WSGI-приложение, выполняется определенный
+обработчик, который еще называется «Представление» и реализованный в виде
+функции на языке Python. Соответственно, если приходит сразу
+несколько запросов, то одна и та же функция-обработчик может быть запущена в
+параллельных потоках. Многопоточность – это норма для фреймворков, поэтому,
+работая с представлениями во Flask, всегда следует это учитывать. 
+
+<p>Конечно, в
+рамках наших занятий мы не будем использовать удаленный сервер и устанавливать
+на него данный фреймворк – это отдельная задача. Кстати, современные хостеры
+предоставляют инструментарий для простой установки и настройки Flask. Поэтому этот
+процесс не представляет больших сложностей. А для изучения данного пакета на
+домашнем ПК от вас потребуется только его установить, используя установщик pip:
+
+<p align=center>pip install Flask
+
+<p>Теперь мы можем
+написать свое первое WSGI-приложение. В самом простом варианте
+оно выглядит так:
+
+<div class="highlight"><div class="block"><pre class="python" style="font-family:monospace;"><span style="color: #ff7700;font-weight:bold;">from</span> flask <span style="color: #ff7700;font-weight:bold;">import</span> Flask
+&nbsp;
+app <span style="color: #66cc66;">=</span> Flask<span style="color: black;">&#40;</span>__name__<span style="color: black;">&#41;</span>
+&nbsp;
+<span style="color: #ff7700;font-weight:bold;">if</span> __name__ <span style="color: #66cc66;">==</span> <span style="color: #483d8b;">&quot;__main__&quot;</span>:
+   app.<span style="color: black;">run</span><span style="color: black;">&#40;</span>debug<span style="color: #66cc66;">=</span><span style="color: #008000;">True</span><span style="color: black;">&#41;</span></pre></div></div>
+
+<p>Вначале идет
+импорт класса Flask, который,
+фактически и формирует это приложение. Далее, мы создаем экземпляр этого класса
+и первым аргументом должны указать имя нашего приложения. Если вся программа
+пишется в одном файле, то следует передавать директиву __name__, которая в
+случае импорта будет содержать имя текущего файла, а в случае самостоятельного
+запуска – значение «__main__». Для Flask это имеет
+принципиальное значение, в частности, от этого зависит где искать подкаталоги с
+шаблонами и статичными документами.
+
+<p>После этого
+выполняется запуск фреймворка методом run и в качестве параметра
+указывается debug=True, чтобы мы в браузере
+видели все ошибки, которые будут возникать при разработке сайта-приложения. Конечно,
+после его создания, здесь следует прописать debug=False, чтобы
+случайные ошибки реальный пользователь уже не видел. 
+
+<p>И, наконец,
+условие. Зачем оно? Смотрите, когда мы непосредственно запускаем наш модуль, то
+директива __name__ будет
+принимать значение «__main__» и будет запущен локальный веб-сервер
+для отладки текущего приложения. Если же модуль запускается, например, на
+удаленном сервере, то нам не нужно запускать еще один сервер. В этом случае
+директива __name__ будет
+принимать имя данного модуля и строчка app.run выполнена не
+будет. То есть, мы это условие прописали с целью запуска приложения
+непосредственно на локальном устройстве.
+
+<p>Соответственно, как
+только фреймворк запущен, у нас активизируется локальный веб-сервер и мы можем
+в браузере создавать запрос, используя вот такой начальный адрес:
+
+<p align=center>http://127.0.0.1:5000/
+
+<p>Давайте сделаем
+это и посмотрим, что получится. Наберем в браузере указанный запрос и видим,
+что запрашиваемая страница не найдена:
+
+<p align=center><img width=623  height=174 id="Рисунок 8"  src="/htm/flask/files/flask-chto-eto-takoe-wsgi-prilozhenie.files/image003.jpg">
+
+<p>Все верно, так и
+должно быть, так как мы в программе не создали еще ни одного представления.
+Сделаем и это, добавим его:
+
+<div class="highlight"><div class="block"><pre class="python" style="font-family:monospace;"><span style="color: #66cc66;">@</span>app.<span style="color: black;">route</span><span style="color: black;">&#40;</span><span style="color: #483d8b;">&quot;/&quot;</span><span style="color: black;">&#41;</span>
+<span style="color: #ff7700;font-weight:bold;">def</span> index<span style="color: black;">&#40;</span><span style="color: black;">&#41;</span>:
+    <span style="color: #ff7700;font-weight:bold;">return</span> <span style="color: #483d8b;">&quot;index&quot;</span></pre></div></div>
+
+<p>Здесь
+используется специальный декоратор route, который
+создает обертку вокруг нашей функции index, которая будет
+активизироваться при обращении к главной странице сайта, то есть, по запросу http://127.0.0.1:5000/
+
+<p>Запустим
+программу, обновим страницу и теперь в браузере видим то, что возвратила
+функция index:
+
+<p align=center><img width=623  height=174 id="Рисунок 11"  src="/htm/flask/files/flask-chto-eto-takoe-wsgi-prilozhenie.files/image004.jpg">
+
+<p>Часто к главной
+странице обращаются еще по index, то есть:
+
+<p align=center>domain/index
+
+<p>например,
+
+<p align=center>proproprogs.ru/index
+
+<p>Чтобы одну и ту
+же страницу отобразить по нескольким URL-адресам, следует добавить
+несколько конструкций route:
+
+<div class="highlight"><div class="block"><pre class="python" style="font-family:monospace;"><span style="color: #66cc66;">@</span>app.<span style="color: black;">route</span><span style="color: black;">&#40;</span><span style="color: #483d8b;">&quot;/index&quot;</span><span style="color: black;">&#41;</span>
+<span style="color: #66cc66;">@</span>app.<span style="color: black;">route</span><span style="color: black;">&#40;</span><span style="color: #483d8b;">&quot;/&quot;</span><span style="color: black;">&#41;</span>
+<span style="color: #ff7700;font-weight:bold;">def</span> index<span style="color: black;">&#40;</span><span style="color: black;">&#41;</span>:
+    <span style="color: #ff7700;font-weight:bold;">return</span> <span style="color: #483d8b;">&quot;index&quot;</span></pre></div></div>
+
+<p>Соответственно,
+для любого другого адреса мы также можем добавить свой отдельный обработчик,
+прописав еще один декоратор route:
+
+<div class="highlight"><div class="block"><pre class="python" style="font-family:monospace;"><span style="color: #66cc66;">@</span>app.<span style="color: black;">route</span><span style="color: black;">&#40;</span><span style="color: #483d8b;">&quot;/about&quot;</span><span style="color: black;">&#41;</span>
+<span style="color: #ff7700;font-weight:bold;">def</span> about<span style="color: black;">&#40;</span><span style="color: black;">&#41;</span>:
+    <span style="color: #ff7700;font-weight:bold;">return</span> <span style="color: #483d8b;">&quot;&lt;h1&gt;О сайте&lt;/h1&gt;&quot;</span></pre></div></div>
+
+<p>Теперь на нашем
+сайте как бы две страницы: главная и /about – о сайте. Причем,
+наши обработчики возвращают HTML-документ и все теги будут
+соответственно отображаться на странице в браузере.
+
+<p>Итак, на этом
+занятии мы с вами сделали первые шаги в понимании работы Flask и построили
+очень простое WSGI-приложение. 
+
+
+
+
+
+</b>
+<div class="video_container">
+	<h3 class="video_title">Видео по теме</h3>
+	<div class="video_list">
+		<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=6jxveKOdyNg&list=PLA0M1Bcd0w8yrxtwgqBvT6OM4HkOU3xYn" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/6jxveKOdyNg/default.jpg" /></div>
+	<p class="video_item_title">Flask #1: Что это такое? Простое WSGI-приложение</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=TSsEMFZVr5E" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/TSsEMFZVr5E/default.jpg" /></div>
+	<p class="video_item_title">Flask #2: Использование шаблонов страниц сайта</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=tP09rxKbNMU" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/tP09rxKbNMU/default.jpg" /></div>
+	<p class="video_item_title">Flask #3: Контекст приложения и контекст запроса</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=oM39KVYsjRs" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/oM39KVYsjRs/default.jpg" /></div>
+	<p class="video_item_title">Flask #4: Функция url_for и переменные URL-адреса</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=pgoRiPJkm3g" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/pgoRiPJkm3g/default.jpg" /></div>
+	<p class="video_item_title">Flask #5: Подключение внешних ресурсов и работа с формами</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=b-Pi5Ggnm2w" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/b-Pi5Ggnm2w/default.jpg" /></div>
+	<p class="video_item_title">Flask #6: Мгновенные сообщения - flash, get_flashed_messages</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=QCQ7GDhr4Tc" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/QCQ7GDhr4Tc/default.jpg" /></div>
+	<p class="video_item_title">Flask #7: Декоратор errorhandler, функции redirect и abort</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=aHWQkbk3xVA" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/aHWQkbk3xVA/default.jpg" /></div>
+	<p class="video_item_title">Flask #8: Создание БД, установление и разрыв соединения при запросах</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=Crxq-d9t_uc" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/Crxq-d9t_uc/default.jpg" /></div>
+	<p class="video_item_title">Flask #9: Добавление и отображение статей из БД</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=M5oKwDB0Hdk" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/M5oKwDB0Hdk/default.jpg" /></div>
+	<p class="video_item_title">Flask #10: Способ представления полноценных HTML-страниц на сервере</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=1BZTZVqfZwc" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/1BZTZVqfZwc/default.jpg" /></div>
+	<p class="video_item_title">Flask #11: Формирование ответа сервера, декораторы перехвата запроса</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=H0TxIqb9rts" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/H0TxIqb9rts/default.jpg" /></div>
+	<p class="video_item_title">Flask #12: Порядок работы с cookies (куками)</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=Bx5PRzS9p44" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/Bx5PRzS9p44/default.jpg" /></div>
+	<p class="video_item_title">Flask #13: Порядок работы с сессиями (session)</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=Q0ztepEQ6b8" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/Q0ztepEQ6b8/default.jpg" /></div>
+	<p class="video_item_title">Flask #14: Регистрация пользователей и шифрование паролей</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=24vVFtwuBWs" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/24vVFtwuBWs/default.jpg" /></div>
+	<p class="video_item_title">Flask #15: Авторизация пользователей на сайте через Flask-Login</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=L_o0wRaZJdg" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/L_o0wRaZJdg/default.jpg" /></div>
+	<p class="video_item_title">Flask #16: Улучшение процесса авторизации (Flask-Login)</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=ICKN_R0wGiI" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/ICKN_R0wGiI/default.jpg" /></div>
+	<p class="video_item_title">Flask #17: Загрузка файлов на сервер и сохранение в БД</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=oba6GGprvKc" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/oba6GGprvKc/default.jpg" /></div>
+	<p class="video_item_title">Flask #18: Применение WTForms для работы с формами сайта</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=Pn5RxiAFuoc" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/Pn5RxiAFuoc/default.jpg" /></div>
+	<p class="video_item_title">Flask #19: Обработка ошибок во Flask-WTF</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=leUbqB2A1HI" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/leUbqB2A1HI/default.jpg" /></div>
+	<p class="video_item_title">Flask #20: Blueprint - что это такое, где и как использовать</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=WSJ8l_RYMAo" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/WSJ8l_RYMAo/default.jpg" /></div>
+	<p class="video_item_title">Flask #21: Blueprint - подключение к БД и работа с ней</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=JqZbeMtwthY" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/JqZbeMtwthY/default.jpg" /></div>
+	<p class="video_item_title">Flask #22: Flask-SQLAlchemy - установка, создание таблиц, добавление записей</p>
+	</a>
+</div>
+<div class="video_item">
+	<a href="https://www.youtube.com/watch?v=EUqo8TzDotI" target="_blank">
+	<div class="thumb"><img src="https://img.youtube.com/vi/EUqo8TzDotI/default.jpg" /></div>
+	<p class="video_item_title">Flask #23: Операции с таблицами через Flask-SQLAlchemy</p>
+	</a>
+</div>
+
+	</div>
+</div></div>
+
+	<ul class="control">
+<li class="last"><a href="flask/ispolzovanie-shablonov">Следующая</a></li></ul><div class="clear"></div>
+
+</td></tr></table>
+</td></tr>
+<tr><td valign=top>
+	<div id="footer">
+		<p>&copy; 2022 Частичное или полное копирование информации с данного сайта для распространения на других ресурсах, в том числе и бумажных, строго запрещено. Все тексты и изображения являются собственностью сайта</p>
+		<p><a href="https://proproprogs.ru/confidencial">Политика конфиденциальности</a> | <a href="https://proproprogs.ru/terms">Пользовательское соглашение</a>
+	</div>
+</td></tr></table>
+
+</body>
+</html>

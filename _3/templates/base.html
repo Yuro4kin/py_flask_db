@@ -1,0 +1,62 @@
+<!--Т.к. как у нас обе страницы index и about повторяют один и тот же шаблон(содержат одинаковую информацию),-->
+<!--поэтому лучший вариант - механизм расширения, наследование шаблона, для создания дочерних страниц сайта-->
+<!--Определим базовый шаблон страницы и ее структуру в файле base.html - в этом файле будет следующий шаблон-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!--    Подключили стили - css/styles.css --> 
+<link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet" />
+<!--    Создали именованный блок title, в именованном блоке происходит проверка-->
+{% block title -%}
+{% if title %}
+        <title>SQL-Flask - {{title}}</title>
+{% else %}
+        <title>About Flask - SQL - DB</title>
+{% endif %}
+{% endblock %}
+</head>
+
+<body>
+{% block content -%}
+<!--Вложенный блок main menu, что отображает и содержит список-->
+        {%- block mainmenu -%}
+
+<!--Список-->
+<ul class="mainmenu">
+
+        <!--  % for m in menu -% -->
+               <!-- m.url     - ERROR когда берем url, который записан в таблице mainmenu -->
+             <!--   /         - главная страница -->
+               <!-- /add_post - добавить пост, выходит ошибка при переходе с http://127.0.0.1:5000/post/2 --на-- http://127.0.0.1:5000/post/add_post   --PAGE NOT FOUND-- -->
+                <!--                                                                                                                    post - лишнее -->
+             <!--   /         - все, что идет перед слешем, сохраняется браузером, а /add_post просто добавляется -->
+           <!--     url_for() - функция решения проблем, но в таком случае срабатывает для всех записей таблицы    -->
+
+<!--     Рабочий вариант №1    -->
+<!-- <li><a href="  url_for('index')  ">Main page</a></li>   -->      
+<!-- _____________--________________--_______ -->
+<!-- <li><a href="  url_for('addPost')  ">Add of posts</a></li> -->
+<!-- _____________--________________--_______ -->
+
+<!--     Рабочий вариант №2    -->
+{% for p in menu %}
+<li><a href="{{p.url}}">{{p.title}}</a></li>
+{% endfor %}
+
+</ul>
+        {% endblock mainmenu -%}
+<div class="clear"></div>
+<div class="content">
+        {% if title -%}
+<!--tag h1-->
+<h1>{{title}}</h1>
+        {% else -%}
+<h1>About Flask</h1>
+        {% endif -%}
+{% endblock -%}
+</div>
+</body>
+</html>

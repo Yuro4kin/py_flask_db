@@ -1,0 +1,12 @@
+<!-- шаблон post.html расширяет базовый шаблон base.html -->
+<!-- шаблон post.html для отображения статьи по url адресу "/post/<int:id_post>" -->
+<!-- {{ post }} - переменная post, которая отображается в блоке content -->
+ 
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+{{ post }}
+{% endblock %}
+
+getPost() - метод который будет брать данные из БД

@@ -1,0 +1,44 @@
+<!--Т.к. как у нас обе страницы index и about повторяют один и тот же шаблон(содержат одинаковую информацию),-->
+<!--поэтому лучший вариант - механизм расширения, наследование шаблона, для создания дочерних страниц сайта-->
+<!--Определим базовый шаблон страницы и ее структуру в файле base.html - в этом файле будет следующий шаблон-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+<!--    Подключили стили - css/styles.css --> 
+<link type="text/css" href="{{ url_for('static', filename='css/styles.css')}}" rel="stylesheet" />
+<!--    Создали именованный блок title, в именованном блоке происходит проверка-->
+{% block title -%}
+{% if title %}
+        <title>SQL-Flask - {{title}}</title>
+{% else %}
+        <title>About Flask - SQL - DB</title>
+{% endif %}
+{% endblock %}
+</head>
+
+<body>
+{% block content -%}
+<!--Вложенный блок main menu, что отображает и содержит список-->
+        {%- block mainmenu -%}
+
+<!--Список-->
+<ul class="mainmenu">
+        {% for m in menu -%}
+<li><a href="{{m.url}}">{{m.name}}</a></li>
+        {% endfor -%}
+</ul>
+        {% endblock mainmenu -%}
+<div class="clear"></div>
+<div class="content">
+        {% if title -%}
+<!--tag h1-->
+<h1>{{title}}</h1>
+        {% else -%}
+<h1>About Flask</h1>
+        {% endif -%}
+{% endblock -%}
+</div>
+</body>
+</html>
