@@ -1,0 +1,38 @@
+<!-- шаблон profile.html расширяет базовый шаблон base.html -->
+<!-- шаблон profile.html для отображения мгновенных ссообщений, если они будут  -->
+<!-- форма для выбора файла и отправки его на сервер  -->
+<!-- multipart/form-data - когда мы отправляем какие либо файлы на сервер, то нужно добавлять такую строчку, такой тип -->
+<!-- кнопка file позволяет выбирать файл на устройстве ПК -->
+<!-- кнопка submit будет отправлять выбранный файл на сервер -->
+<!-- current_user - это проксипеременная для обращения к текущему пользователю -->
+<!-- .getName()  - получаем имя текущего пользователя, но нужно прописать метод в файле UserLogin -->
+<!-- .getEmail() - получаем почту текущего пользователя, но нужно прописать метод в файле UserLogin -->
+
+{% extends 'base.html' %}
+ 
+{% block content %}
+{{ super() }}
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash {{cat}}">{{msg}}</div>
+{% endfor %}
+<table border="0" class="profile-table">
+         <tr><td valign="top">
+                   <div class="profile-ava"><img src="{{ url_for('userava') }}"></div>
+                   <div class="profile-load">
+                   <!-- action="_ _url_for('upload')_ _" -->
+                   <form action="{{url_for('upload')}}" method="POST" enctype="multipart/form-data">
+                            <input type="file" name="file">
+                            <input type="submit" value="Загрузить">
+                   </form> 
+                   </div>
+         </td>
+         <td valign="top" class="profile-panel">
+                   <a href="{{url_for('logout')}}">Выйти из профиля</a>
+                   <ul class="profile-info">
+                   <li>Имя: {{ current_user.getName() }}</li>
+                   <li>Email: {{ current_user.getEmail() }}</li>
+                   </ul>
+         </td></tr>
+</table>
+{% endblock %}
+ 
